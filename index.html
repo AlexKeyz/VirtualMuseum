@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Virtual Museum</title>
+    <style>
+      /* Встроенные стили вместо внешнего CSS */
+      #unity-container {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #000;
+      }
+      
+      #unity-canvas {
+        width: 100%;
+        height: 100%;
+        background: #231F20;
+      }
+
+      .loading {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="unity-container">
+      <canvas id="unity-canvas"></canvas>
+      <div id="loading" class="loading">Loading...</div>
+    </div>
+
+    <script>
+      var buildUrl = "Build";
+      var config = {
+        dataUrl: buildUrl + "/VirtualMuseum.data",
+        frameworkUrl: buildUrl + "/VirtualMuseum.framework.js",
+        codeUrl: buildUrl + "/VirtualMuseum.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "AlexKeyz",
+        productName: "Virtual Museum",
+        productVersion: "1.0",
+      };
+
+      var loadingBar = document.querySelector("#loading");
+      var script = document.createElement("script");
+      script.src = config.frameworkUrl;
+      script.onload = () => {
+        createUnityInstance(document.querySelector("#unity-canvas"), config, (progress) => {
+          loadingBar.textContent = "Loading: " + (progress * 100 | 0) + "%";
+        }).then((unityInstance) => {
+          loadingBar.style.display = "none";
+        }).catch((message) => {
+          alert("Error: " + message);
+        });
+      };
+      document.body.appendChild(script);
+    </script>
+  </body>
+</html>
